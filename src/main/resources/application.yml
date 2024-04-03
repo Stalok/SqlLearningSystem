@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:13306
+    username: root
+    password: 556234
+  docker:
+    compose:
+      lifecycle-management: start_only
+
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: INFO
+    org.springframework.jdbc.support.JdbcTransactionManager: DEBUG
+
+server:
+    port: 9231
+
