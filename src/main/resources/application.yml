@@ -6,7 +6,8 @@ spring:
     password: 556234
   docker:
     compose:
-      lifecycle-management: start_only
+#      TODO : start only for production
+      lifecycle-management: start_and_stop
 
 
 mybatis:
@@ -20,4 +21,8 @@ logging:
 
 server:
     port: 9231
-
+    ssl:
+#     TODO : change to production keystore
+      certificate: "classpath:keystore/my-cert.pem"
+      certificate-private-key: "classpath:keystore/my-cert-key.pem"
+      trust-certificate: "classpath:keystore/ca-cert.pem"
