@@ -5,10 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.derrick.sqllearningsystem.entity.LoginData;
 import org.derrick.sqllearningsystem.service.CredentialService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -22,9 +20,22 @@ public class HomeController {
         return "Welcome to SQL Learning System!";
     }
 
+    /**
+     * Login
+     * @param loginData login data
+     * @return login successful
+     */
     @PostMapping("/login")
-    public String login(@RequestBody LoginData loginData) {
-        credentialService.login(loginData.username(), loginData.password());
-        return "Login successful";
+    public ResponseEntity<String> login(@RequestBody LoginData loginData) {
+        if (loginData.username() == null || loginData.password() == null) {
+            return ResponseEntity.badRequest().body("Username or password is missing");
+        } else if (loginData.username().isEmpty() || loginData.password().isEmpty()){
+            return ResponseEntity.badRequest().body("Username or password is empty");
+        } else if (credentialService.login(loginData.username(), loginData.password())) {
+            return ResponseEntity.ok("Login successful");
+        } else {
+            return ResponseEntity.badRequest().body("Login failed");
+        }
+
     }
 }
