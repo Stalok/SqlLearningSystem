@@ -1,7 +1,7 @@
 package org.derrick.sqllearningsystem.mapper;
 
 import org.apache.ibatis.annotations.*;
-import org.derrick.sqllearningsystem.dao.PlayGroundSession;
+import org.derrick.sqllearningsystem.entity.PlayGroundSession;
 
 import java.time.LocalDateTime;
 

@@ -4,6 +4,17 @@ spring:
     url: jdbc:mysql://localhost:13306
     username: root
     password: 556234
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          # TODO: replace with real client-id and client-secret
+#            google:
+#                client-id: 123456789012-abc123def456.apps.googleusercontent.com
+#                client-secret: abcdefghijklmnopqrstuvwxyz
+#            github:
+#                client-id: 12345678901234567890
+#                client-secret: abcdefghijklmnopqrstuvwxyz
   docker:
     compose:
 #      TODO : start only for production
@@ -18,11 +29,12 @@ logging:
   level:
     root: INFO
     org.springframework.jdbc.support.JdbcTransactionManager: DEBUG
+    org.springframework.security: DEBUG
 
 server:
     port: 9231
-    ssl:
-#     TODO : change to production keystore
-      certificate: "classpath:keystore/my-cert.pem"
-      certificate-private-key: "classpath:keystore/my-cert-key.pem"
-      trust-certificate: "classpath:keystore/ca-cert.pem"
+#    ssl:
+##     TODO : change to production keystore
+#      certificate: "classpath:keystore/my-cert.pem"
+#      certificate-private-key: "classpath:keystore/my-cert-key.pem"
+#      trust-certificate: "classpath:keystore/ca-cert.pem"

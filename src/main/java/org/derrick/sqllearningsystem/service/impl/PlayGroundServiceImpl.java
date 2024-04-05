@@ -1,7 +1,7 @@
 package org.derrick.sqllearningsystem.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.derrick.sqllearningsystem.dao.PlayGroundSession;
+import org.derrick.sqllearningsystem.entity.PlayGroundSession;
 import org.derrick.sqllearningsystem.mapper.PlayGroundMapper;
 import org.derrick.sqllearningsystem.service.PlayGroundService;
 import org.springframework.stereotype.Service;
@@ -10,8 +10,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Slf4j
 @Service

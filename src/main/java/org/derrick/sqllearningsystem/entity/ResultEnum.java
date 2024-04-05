@@ -1,4 +1,4 @@
-package org.derrick.sqllearningsystem.dao;
+package org.derrick.sqllearningsystem.entity;
 
 public enum  ResultEnum {
     /**

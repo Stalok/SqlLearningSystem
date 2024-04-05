@@ -28,6 +28,7 @@ create table if not exists sql_learning_system_db.`lesson`
     `is_active` BOOLEAN default false not null comment '是否激活'
 ) comment '课程表';
 
+drop table if exists sql_learning_system_db.`user`;
 -- 用户表
 create table if not exists sql_learning_system_db.`user`
 (
@@ -38,7 +39,8 @@ create table if not exists sql_learning_system_db.`user`
     `progress` int default 0 not null comment '学习进度, store the last completed lesson id' references lesson(id),
     `create_time` TIMESTAMP default CURRENT_TIMESTAMP not null comment '创建时间',
     `update_time` TIMESTAMP default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    `is_active` BOOLEAN default false not null comment '是否激活'
+    `last_login_time` TIMESTAMP default CURRENT_TIMESTAMP not null comment '最后登录时间',
+    `is_active` BOOLEAN default true not null comment '是否激活'
 ) comment '用户表';
 
 create table if not exists sql_learning_system_db.quizzes (
