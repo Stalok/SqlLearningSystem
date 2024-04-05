@@ -19,7 +19,7 @@ public class HomeController {
     CredentialService credentialService;
     @GetMapping("/")
     public String home() {
-        return "Welcome to SQL Learning System !";
+        return "Welcome to SQL Learning System!";
     }
 
     @PostMapping("/login")
