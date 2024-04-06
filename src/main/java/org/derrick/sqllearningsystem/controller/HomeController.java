@@ -1,20 +1,23 @@
 package org.derrick.sqllearningsystem.controller;
 
-import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.derrick.sqllearningsystem.entity.LoginData;
+import org.derrick.sqllearningsystem.entity.RegisterData;
 import org.derrick.sqllearningsystem.service.CredentialService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class HomeController {
 
-    CredentialService credentialService;
+    private final CredentialService credentialService;
     @GetMapping("/")
     public String home() {
         return "Welcome to SQL Learning System!";
@@ -37,5 +40,17 @@ public class HomeController {
             return ResponseEntity.badRequest().body("Login failed");
         }
 
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody RegisterData registerData) {
+        if (registerData.username() == null || registerData.password() == null || registerData.email() == null) {
+            return ResponseEntity.badRequest().body("Username, password or email is missing");
+        } else if (registerData.username().isEmpty() || registerData.password().isEmpty() || registerData.email().isEmpty()){
+            return ResponseEntity.badRequest().body("Username, password or email is empty");
+        } else {
+            credentialService.register(registerData);
+            return ResponseEntity.ok("Register successful");
+        }
     }
 }

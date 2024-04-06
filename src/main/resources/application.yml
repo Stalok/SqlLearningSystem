@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:13306
+    url: jdbc:mysql://localhost:13306/sql_learning_system_db
     username: root
     password: 556234
 #  security:
@@ -33,8 +33,8 @@ logging:
 
 server:
     port: 9231
-#    ssl:
-##     TODO : change to production keystore
-#      certificate: "classpath:keystore/my-cert.pem"
-#      certificate-private-key: "classpath:keystore/my-cert-key.pem"
-#      trust-certificate: "classpath:keystore/ca-cert.pem"
+    ssl:
+#     TODO : change to production keystore
+      certificate: "classpath:keystore/my-cert.pem"
+      certificate-private-key: "classpath:keystore/my-cert-key.pem"
+      trust-certificate: "classpath:keystore/ca-cert.pem"
