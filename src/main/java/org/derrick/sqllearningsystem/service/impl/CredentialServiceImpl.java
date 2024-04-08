@@ -3,7 +3,6 @@ package org.derrick.sqllearningsystem.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.derrick.sqllearningsystem.entity.RegisterData;
-import org.derrick.sqllearningsystem.exception.UsernameExistedException;
 import org.derrick.sqllearningsystem.mapper.CredentialMapper;
 import org.derrick.sqllearningsystem.service.CredentialService;
 import org.springframework.stereotype.Service;
@@ -48,7 +47,7 @@ public class CredentialServiceImpl implements CredentialService {
         }
         // check if the username already exists
         if (credentialMapper.countUsersByUsername(registerData.username()) > 0) {
-            throw new UsernameExistedException();
+            throw new IllegalArgumentException("Username already exists");
         }
         // register the user
         // TODO: hash the password

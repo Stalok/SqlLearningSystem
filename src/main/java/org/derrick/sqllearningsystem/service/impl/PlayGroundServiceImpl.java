@@ -1,7 +1,9 @@
 package org.derrick.sqllearningsystem.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.derrick.sqllearningsystem.entity.PlayGroundSession;
+import org.derrick.sqllearningsystem.mapper.CredentialMapper;
 import org.derrick.sqllearningsystem.mapper.PlayGroundMapper;
 import org.derrick.sqllearningsystem.service.PlayGroundService;
 import org.springframework.stereotype.Service;
@@ -9,60 +11,64 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.time.LocalDateTime;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PlayGroundServiceImpl implements PlayGroundService {
     private final PlayGroundMapper playGroundMapper;
+    private final CredentialMapper credentialMapper;
+//    private final DockerClient dockerClient;
 
-    public PlayGroundServiceImpl(PlayGroundMapper playGroundMapper) {
-        this.playGroundMapper = playGroundMapper;
-    }
+
 
     @Override
     public void newPlayGround(String username, Integer playgroundId) {
 
-        RestTemplate restTemplate = new RestTemplate();
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//
+//        // check if the port is already in use
+//        int port = 5001;
+//        boolean found = false;
+//
+//        while (!found) {
+//            try {
+//                ServerSocket serverSocket = new ServerSocket(port);
+//                serverSocket.close();
+//                found = true;
+//            } catch (IOException e) {
+//                port++;
+//            }
+//        }
+//
+//        // Send a GET request to the specified URL
+//        String containerId = restTemplate.getForObject("http://localhost:5000/docker/" + port, String.class);
+//        log.info("created playground for user: " + username + " with containerId: " + containerId + " and port: " + port);
+//        // System.out.println(containerId);
+//
+//        // write the username, containerId to the database sql_session table
+//        playGroundMapper.newPlayGround(username, containerId, LocalDateTime.now().plusHours(1), port);
+//        log.info("inserted into database");
+//        // TODO: inject the default sql script to the container
 
-
-        // check if the port is already in use
-        int port = 5001;
-        boolean found = false;
-
-        while (!found) {
-            try {
-                ServerSocket serverSocket = new ServerSocket(port);
-                serverSocket.close();
-                found = true;
-            } catch (IOException e) {
-                port++;
-            }
+        // verify if the user is in the database
+        int count = credentialMapper.countUsersByUsername(username);
+        if (count == 0) {
+            throw new IllegalArgumentException("User not existed");
         }
+        // verify if the user has a playground
+//        PlayGroundSession playGroundSession = playGroundMapper.getPlayGroundSession(username);
 
-        // Send a GET request to the specified URL
-        String containerId = restTemplate.getForObject("http://localhost:5000/docker/" + port, String.class);
-        log.info("created playground for user: " + username + " with containerId: " + containerId + " and port: " + port);
-        // System.out.println(containerId);
-
-        // write the username, containerId to the database sql_session table
-        playGroundMapper.newPlayGround(username, containerId, LocalDateTime.now().plusHours(1), port);
-        log.info("inserted into database");
-        // TODO: inject the default sql script to the container
+            // find a unused port number
+            int port;
+            try (ServerSocket serverSocket = new ServerSocket(0)) {
+                port = serverSocket.getLocalPort();
+            } catch (IOException e) {
+                throw new IllegalStateException("No available port");
+            }
 
 
-    }
-
-    /**
-     * extend the expiry time of the playground by 15 minutes
-     * @param username the username of the user
-     */
-    @Override
-    public void ExtendPlayGround(String username) {
-        // get the expiry time of the playground
-        LocalDateTime expiryTime = playGroundMapper.getExpiryTime(username);
-        // extend the expiry time by 15 minutes
-        playGroundMapper.updateExpiryTime(username, expiryTime.plusMinutes(15));
     }
 
     /**
@@ -78,5 +84,16 @@ public class PlayGroundServiceImpl implements PlayGroundService {
         restTemplate.delete("http://localhost:5000/docker/" + playGroundSession.containerId());
         // delete the record from the database
         playGroundMapper.deletePlayGround(username);
+    }
+
+    @Override
+    public void newPlayGround(String username) {
+
+
+    }
+
+    @Override
+    public void forwardPlayGround(String username) {
+
     }
 }

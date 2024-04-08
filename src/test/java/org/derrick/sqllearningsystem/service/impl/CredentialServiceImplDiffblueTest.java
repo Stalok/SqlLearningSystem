@@ -1,7 +1,6 @@
 package org.derrick.sqllearningsystem.service.impl;
 
 import org.derrick.sqllearningsystem.entity.RegisterData;
-import org.derrick.sqllearningsystem.exception.UsernameExistedException;
 import org.derrick.sqllearningsystem.mapper.CredentialMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -129,7 +128,7 @@ class CredentialServiceImplDiffblueTest {
         when(credentialMapper.countUsersByUsername(Mockito.any())).thenReturn(3);
 
         // Act and Assert
-        assertThrows(UsernameExistedException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> credentialServiceImpl.register(new RegisterData("janedoe", "iloveyou", "jane.doe@example.org")));
         verify(credentialMapper).countUsersByUsername(eq("janedoe"));
     }
@@ -217,10 +216,10 @@ class CredentialServiceImplDiffblueTest {
     @Test
     void testRegister9() {
         // Arrange
-        when(credentialMapper.countUsersByUsername(Mockito.any())).thenThrow(new UsernameExistedException());
+        when(credentialMapper.countUsersByUsername(Mockito.any())).thenThrow(new IllegalArgumentException());
 
         // Act and Assert
-        assertThrows(UsernameExistedException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> credentialServiceImpl.register(new RegisterData("janedoe", "iloveyou", "jane.doe@example.org")));
         verify(credentialMapper).countUsersByUsername(eq("janedoe"));
     }

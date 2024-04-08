@@ -27,21 +27,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.internalServerError().body("Internal error");
     }
 
-    @ExceptionHandler(UsernameExistedException.class)
-    public ResponseEntity<String> handleUsernameExistedException(UsernameExistedException e) {
-        log.error("Username existed exception: ", e);
-        return ResponseEntity.badRequest().body("Username existed");
-    }
-
-    @ExceptionHandler(UserNotExistedException.class)
-    public ResponseEntity<String> handleUserNotExistedException(UserNotExistedException e) {
-        log.error("User not existed exception: ", e);
-        return ResponseEntity.badRequest().body("User not existed");
-    }
-
-    @ExceptionHandler(PasswordNotMatchException.class)
-    public ResponseEntity<String> handlePasswordNotMatchException(PasswordNotMatchException e) {
-        log.error("Password not match exception: ", e);
-        return ResponseEntity.badRequest().body("Password not match");
-    }
 }
