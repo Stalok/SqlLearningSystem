@@ -62,4 +62,7 @@ public interface CredentialMapper {
 
     @Select("SELECT progress FROM user WHERE username = #{username}")
     int getProgressByUsername(String username);
+
+    @Update("UPDATE user SET progress = #{playgroundId} WHERE username = #{username}")
+    void updateProgressByUsername(String username, Integer playgroundId);
 }

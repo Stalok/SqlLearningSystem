@@ -1,6 +1,7 @@
 package org.derrick.sqllearningsystem.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.derrick.sqllearningsystem.entity.QuizView;
 import org.derrick.sqllearningsystem.service.PlayGroundService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,8 @@ public class PlayGroundController {
      * @return message
      */
     @PostMapping("/{username}/{playgroundId}")
-    public String newPlayGround(@PathVariable String username, @PathVariable Integer playgroundId) throws Exception {
-        playGroundService.newPlayGround(username, playgroundId);
-        return "Playground created for " + username;
+    public QuizView newPlayGround(@PathVariable String username, @PathVariable Integer playgroundId) throws Exception {
+        return playGroundService.newPlayGround(username, playgroundId);
     }
 
     /**

@@ -30,4 +30,7 @@ public interface PlayGroundMapper {
 
     @Select("select * from sql_learning_system_db.`quizzes` where playground_id = #{playgroundId} and playground_quiz_id = 1")
     Quiz getFirstQuizByPlaygroundId(Integer playgroundId);
+
+    @Select("select count(*) from sql_learning_system_db.`quizzes` where playground_id = #{playgroundId}")
+    Integer countQuizByPlaygroundId(Integer playgroundId);
 }

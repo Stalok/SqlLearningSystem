@@ -24,27 +24,8 @@ public class JwtUtil {
                 .compact();
     }
 
-    public static String getUsername(String token) {
-
-        return null;
-    }
-
-    public static boolean validateToken(String token) {
-
-        return false;
-    }
-
     public static Claims parseToken(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-    }
-
-    public static boolean isTokenInvalid(String token) {
-
-        return false;
-    }
-
-    public static void isTokenExpired() throws NoSuchAlgorithmException, InvalidKeySpecException {
-
     }
 
 }

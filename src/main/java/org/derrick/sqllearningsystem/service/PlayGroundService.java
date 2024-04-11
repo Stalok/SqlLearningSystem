@@ -1,11 +1,13 @@
 package org.derrick.sqllearningsystem.service;
 
+import org.derrick.sqllearningsystem.entity.QuizView;
+
 public interface PlayGroundService {
-    void newPlayGround(String username, Integer playgroundId) throws Exception;
+    QuizView newPlayGround(String username, Integer playgroundId) throws Exception;
 
     void deletePlayGround(String username);
 
-    void newPlayGround(String username);
+    QuizView newPlayGround(String username);
 
-    void forwardPlayGround(String username);
+    QuizView forwardPlayGround(String username);
 }
