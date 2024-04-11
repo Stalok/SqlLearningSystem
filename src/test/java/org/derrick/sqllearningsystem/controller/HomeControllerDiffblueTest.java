@@ -109,4 +109,27 @@ class HomeControllerDiffblueTest {
                 .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=ISO-8859-1"))
                 .andExpect(MockMvcResultMatchers.content().string("Welcome to SQL Learning System!"));
     }
+
+    /**
+     * Method under test: {@link HomeController#login(LoginData)}
+     */
+    @Test
+    void testLogin2() throws Exception {
+        // Arrange
+        doNothing().when(credentialService).login(Mockito.any(), Mockito.any());
+        MockHttpServletRequestBuilder contentTypeResult = MockMvcRequestBuilders.post("/login")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        MockHttpServletRequestBuilder requestBuilder = contentTypeResult
+                .content(objectMapper.writeValueAsString(new LoginData("janedoe", "iloveyou")));
+
+        // Act and Assert
+        MockMvcBuilders.standaloneSetup(homeController)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=ISO-8859-1"))
+                .andExpect(MockMvcResultMatchers.content().string("Login successful"));
+    }
 }

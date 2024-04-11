@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.derrick.sqllearningsystem.entity.UserCredential;
 
 @Mapper
 public interface CredentialMapper {
@@ -25,6 +26,8 @@ public interface CredentialMapper {
     @Select("SELECT COUNT(*) FROM user WHERE username = #{username}")
     int countUsersByUsername(String username);
 
+    @Select("SELECT username, password, is_active FROM user WHERE username = #{username} limit 1")
+    UserCredential getUserByUsername(String username);
     /**
      * Register a new user
      * @param username username

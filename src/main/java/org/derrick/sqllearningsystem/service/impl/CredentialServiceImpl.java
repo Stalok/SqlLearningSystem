@@ -5,6 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.derrick.sqllearningsystem.entity.RegisterData;
 import org.derrick.sqllearningsystem.mapper.CredentialMapper;
 import org.derrick.sqllearningsystem.service.CredentialService;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +18,8 @@ import org.springframework.stereotype.Service;
 public class CredentialServiceImpl implements CredentialService {
 
     private final CredentialMapper credentialMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationConfiguration authenticationConfiguration;
     @Override
     public void login(String username, String password) {
 
@@ -21,21 +28,33 @@ public class CredentialServiceImpl implements CredentialService {
             throw new IllegalArgumentException("Username or password is empty");
         }
 
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        try {
+            Authentication authentication = authenticationConfiguration.getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
+            if (authentication.isAuthenticated()) {
+                SecurityContextHolder
+                        .getContext()
+                        .setAuthentication(authentication);
+                log.info("User {} logged in successfully", username);
+            }
 
-        // TODO: hash the password
-
-        // check if the password is correct
-        switch (credentialMapper.countUsersByCredential(username, password)) {
-            case 0:
-                throw new IllegalArgumentException("Username or password is incorrect");
-            case 1:
-                break;
-            default:
-                throw new IllegalStateException("More than one user with the same username and password");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Username or password is incorrect");
         }
 
-        // update the last login time
-        credentialMapper.updateLastLoginTime(username);
+        // generate the token
+//        String token = JwtUtil.generateToken(username);
+
+//        // check if the password is correct
+//        UserCredential userCredential = credentialMapper.getUserByUsername(username);
+//        if (userCredential == null || !passwordEncoder.matches(password, userCredential.getPassword()) || !userCredential.is_active()) {
+//            throw new IllegalArgumentException("Username or password is incorrect");
+//        }
+//
+//        // update the last login time
+//        credentialMapper.updateLastLoginTime(username);
+//
+//        log.info("User {} logged in successfully", username);
     }
 
     @Override
@@ -50,8 +69,7 @@ public class CredentialServiceImpl implements CredentialService {
             throw new IllegalArgumentException("Username already exists");
         }
         // register the user
-        // TODO: hash the password
-        credentialMapper.register(registerData.username(), registerData.password(), registerData.email());
+        credentialMapper.register(registerData.username(), passwordEncoder.encode(registerData.password()), registerData.email());
         log.info("User {} registered successfully", registerData.username());
     }
 
@@ -73,11 +91,11 @@ public class CredentialServiceImpl implements CredentialService {
 //        }
 
         // check if the original password is correct
-        if (credentialMapper.countUsersByCredential(username, originalPassword) == 0) {
+        if (!passwordEncoder.matches(originalPassword, credentialMapper.getUserByUsername(username).password())) {
             throw new IllegalArgumentException("Username or original password is incorrect");
         }
 
         // update the password
-        credentialMapper.updatePassword(username, newPassword);
+        credentialMapper.updatePassword(username, passwordEncoder.encode(newPassword));
     }
 }

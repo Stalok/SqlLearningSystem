@@ -1,5 +1,6 @@
 package org.derrick.sqllearningsystem.service.impl;
 
+import com.github.dockerjava.core.DockerClientConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.derrick.sqllearningsystem.entity.PlayGroundSession;
@@ -18,8 +19,7 @@ import java.net.ServerSocket;
 public class PlayGroundServiceImpl implements PlayGroundService {
     private final PlayGroundMapper playGroundMapper;
     private final CredentialMapper credentialMapper;
-//    private final DockerClient dockerClient;
-
+    private final DockerClientConfig config;
 
 
     @Override

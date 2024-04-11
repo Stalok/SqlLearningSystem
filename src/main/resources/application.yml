@@ -15,24 +15,33 @@ spring:
 #            github:
 #                client-id: 12345678901234567890
 #                client-secret: abcdefghijklmnopqrstuvwxyz
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+#      sentinel:
+#        username: user
+#        password: pass
+#      database: 0
+#      connect-timeout: 4000
   docker:
     compose:
 #      TODO : start only for production
-      lifecycle-management: start_and_stop
+      lifecycle-management: start_only
 
-
-mybatis:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#
+#mybatis:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 logging:
   level:
     root: INFO
-    org.springframework.jdbc.support.JdbcTransactionManager: DEBUG
+#    org.springframework.jdbc.support.JdbcTransactionManager: DEBUG
     org.springframework.security: DEBUG
 
 server:
-    port: 9231
+    port: 8080
     ssl:
 #     TODO : change to production keystore
       certificate: "classpath:keystore/my-cert.pem"
