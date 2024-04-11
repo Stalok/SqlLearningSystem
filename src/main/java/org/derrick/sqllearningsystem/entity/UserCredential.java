@@ -7,6 +7,9 @@ import java.util.Collection;
 import java.util.List;
 
 public record UserCredential(String username, String password, Boolean is_active) implements UserDetails {
+    public UserCredential(String username){
+        this(username, "", true);
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

@@ -5,12 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.derrick.sqllearningsystem.entity.RegisterData;
 import org.derrick.sqllearningsystem.mapper.CredentialMapper;
 import org.derrick.sqllearningsystem.service.CredentialService;
+import org.derrick.sqllearningsystem.util.JwtUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -21,7 +25,7 @@ public class CredentialServiceImpl implements CredentialService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationConfiguration authenticationConfiguration;
     @Override
-    public void login(String username, String password) {
+    public String login(String username, String password) {
 
         // check if the username or password is empty
         if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
@@ -35,9 +39,15 @@ public class CredentialServiceImpl implements CredentialService {
                 SecurityContextHolder
                         .getContext()
                         .setAuthentication(authentication);
-                log.info("User {} logged in successfully", username);
             }
 
+            // update the last login time
+            credentialMapper.updateLastLoginTime(username);
+            log.info("User {} logged in successfully", username);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("username", username);
+            return JwtUtil.generateToken(map);
         } catch (Exception e) {
             throw new IllegalArgumentException("Username or password is incorrect");
         }
@@ -45,16 +55,7 @@ public class CredentialServiceImpl implements CredentialService {
         // generate the token
 //        String token = JwtUtil.generateToken(username);
 
-//        // check if the password is correct
-//        UserCredential userCredential = credentialMapper.getUserByUsername(username);
-//        if (userCredential == null || !passwordEncoder.matches(password, userCredential.getPassword()) || !userCredential.is_active()) {
-//            throw new IllegalArgumentException("Username or password is incorrect");
-//        }
-//
-//        // update the last login time
-//        credentialMapper.updateLastLoginTime(username);
-//
-//        log.info("User {} logged in successfully", username);
+
     }
 
     @Override

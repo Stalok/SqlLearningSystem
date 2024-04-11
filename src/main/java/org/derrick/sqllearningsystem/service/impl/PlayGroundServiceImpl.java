@@ -1,17 +1,26 @@
 package org.derrick.sqllearningsystem.service.impl;
 
-import com.github.dockerjava.core.DockerClientConfig;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dockerjava.transport.DockerHttpClient;
+import com.github.dockerjava.transport.DockerHttpClient.Request;
+import com.github.dockerjava.transport.DockerHttpClient.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.derrick.sqllearningsystem.entity.PlayGroundSession;
+import org.derrick.sqllearningsystem.entity.Quiz;
 import org.derrick.sqllearningsystem.mapper.CredentialMapper;
 import org.derrick.sqllearningsystem.mapper.PlayGroundMapper;
 import org.derrick.sqllearningsystem.service.PlayGroundService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -19,55 +28,61 @@ import java.net.ServerSocket;
 public class PlayGroundServiceImpl implements PlayGroundService {
     private final PlayGroundMapper playGroundMapper;
     private final CredentialMapper credentialMapper;
-    private final DockerClientConfig config;
+    private final DockerHttpClient dockerHttpClient;
 
 
     @Override
     public void newPlayGround(String username, Integer playgroundId) {
-
-//        RestTemplate restTemplate = new RestTemplate();
-//
-//
-//        // check if the port is already in use
-//        int port = 5001;
-//        boolean found = false;
-//
-//        while (!found) {
-//            try {
-//                ServerSocket serverSocket = new ServerSocket(port);
-//                serverSocket.close();
-//                found = true;
-//            } catch (IOException e) {
-//                port++;
-//            }
-//        }
-//
-//        // Send a GET request to the specified URL
-//        String containerId = restTemplate.getForObject("http://localhost:5000/docker/" + port, String.class);
-//        log.info("created playground for user: " + username + " with containerId: " + containerId + " and port: " + port);
-//        // System.out.println(containerId);
-//
-//        // write the username, containerId to the database sql_session table
-//        playGroundMapper.newPlayGround(username, containerId, LocalDateTime.now().plusHours(1), port);
-//        log.info("inserted into database");
-//        // TODO: inject the default sql script to the container
-
-        // verify if the user is in the database
-        int count = credentialMapper.countUsersByUsername(username);
-        if (count == 0) {
-            throw new IllegalArgumentException("User not existed");
-        }
-        // verify if the user has a playground
-//        PlayGroundSession playGroundSession = playGroundMapper.getPlayGroundSession(username);
-
-            // find a unused port number
-            int port;
-            try (ServerSocket serverSocket = new ServerSocket(0)) {
+        // find a unused port number
+        int port;
+        try {
+                ServerSocket serverSocket = new ServerSocket(0);
                 port = serverSocket.getLocalPort();
+                serverSocket.close();
             } catch (IOException e) {
                 throw new IllegalStateException("No available port");
             }
 
+
+        // create a new mysql container
+        Request createContainerRequest = Request.builder()
+                .method(Request.Method.POST)
+                .path("/v1.44/containers/create")
+                .putHeader("Content-Type", "application/json")
+                .body(new ByteArrayInputStream(("{\"Image\":\"mysql:8.0.36-debian\",\"Env\":[\"MYSQL_ROOT_PASSWORD=123456\"],\"ExposedPorts\":{\"3306/tcp\":{}},\"HostConfig\":{\"PortBindings\":{\"3306/tcp\":[{\"HostPort\":\"" + port + "\"}]}}}").getBytes()))
+                .build();
+
+        String containerId;
+        try (Response response = dockerHttpClient.execute(createContainerRequest)) {
+            // get the container id
+            if (response.getStatusCode() != 201) {
+                throw new IllegalStateException("Failed to create container");
+            }
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(IOUtils.toString(response.getBody(), StandardCharsets.UTF_8));
+            containerId = jsonNode.get("Id").asText();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // start the container
+        Request startContainerRequest = Request.builder()
+                .method(Request.Method.POST)
+                .path("/v1.44/containers/" + containerId + "/start")
+                .build();
+
+        Response response = dockerHttpClient.execute(startContainerRequest);
+        if (response.getStatusCode() != 204) {
+            throw new IllegalStateException("Failed to start container");
+        }
+
+        log.info("container {} started for user {} at port {}", containerId, username, port);
+
+        // write the username, containerId to the playground_session table
+        playGroundMapper.newPlayGround(username, containerId, port, LocalDateTime.now().plusHours(1));
+
+        // get script of quiz and send it to the container
+        Quiz quiz = playGroundMapper.getFirstQuizByPlaygroundId(playgroundId);
 
     }
 
@@ -75,10 +90,11 @@ public class PlayGroundServiceImpl implements PlayGroundService {
      * delete the playground of the user
      * @param username the username of the user
      */
+    @Deprecated
     @Override
     public void deletePlayGround(String username) {
         // get the port number of the playground
-        PlayGroundSession playGroundSession = playGroundMapper.getPlayGroundSession(username);
+        PlayGroundSession playGroundSession = playGroundMapper.getPlayGroundSessionByUsername(username);
         // send a DELETE request to the port number
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.delete("http://localhost:5000/docker/" + playGroundSession.containerId());
@@ -88,12 +104,16 @@ public class PlayGroundServiceImpl implements PlayGroundService {
 
     @Override
     public void newPlayGround(String username) {
-
+        // get the last playground of the user
+        int progress = credentialMapper.getProgressByUsername(username);
+        // create a new playground with the progress
+        newPlayGround(username, progress);
 
     }
 
     @Override
     public void forwardPlayGround(String username) {
-
+        //TODO
     }
+
 }

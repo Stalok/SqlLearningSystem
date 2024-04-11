@@ -24,10 +24,10 @@ spring:
 #        password: pass
 #      database: 0
 #      connect-timeout: 4000
-  docker:
-    compose:
-#      TODO : start only for production
-      lifecycle-management: start_only
+#  docker:
+#    compose:
+##      TODO : start only for production
+#      lifecycle-management: start_only
 
 #
 #mybatis:

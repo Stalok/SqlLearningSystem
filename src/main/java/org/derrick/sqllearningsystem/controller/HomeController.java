@@ -28,16 +28,9 @@ public class HomeController {
      */
     @PostMapping("/login")
     public String login(@RequestBody LoginData loginData) {
-            credentialService.login(loginData.username(), loginData.password());
-            return "Login successful";
+        return credentialService.login(loginData.username(), loginData.password());
     }
 
-//    @GetMapping("/login2")
-//    public String login2(HttpSession session) {
-//            credentialService.login("janedoe", "iloveyou");
-//        System.out.println(session.getAttribute("SESSION"));
-//            return session.getAttribute("SESSION").toString();
-//    }
 
     @PostMapping("/register")
     public String register(@RequestBody RegisterData registerData) {

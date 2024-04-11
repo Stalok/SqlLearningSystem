@@ -20,8 +20,8 @@ create table if not exists sql_learning_system_db.`lesson`
     `id` int not null auto_increment comment '主键' primary key,
     `name` varchar(256) not null comment '课程名称',
     `description` varchar(256) not null comment '课程描述',
-    `type` varchar(256) not null comment '课程类型',
-    `content_id` int not null comment '课程内容id, 用于关联课程内容表, could be article or playground(lab)',
+    `type` varchar(256) not null comment '课程类型, could be article or playground(lab)',
+    `content_id` int not null comment '课程内容id, 用于关联课程内容表, references to  article id or playground(lab) id',
     `chapter` int default 0 not null comment '所屬章节' references chapter(id),
     `create_time` TIMESTAMP default CURRENT_TIMESTAMP not null comment '创建时间',
     `update_time` TIMESTAMP default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
@@ -58,4 +58,13 @@ create table if not exists sql_learning_system_db.quizzes (
     -- multi_choice: 1, 2, 3, 4
     -- query: select ...
     -- changes: make changes to mirror_db and query both db to compare
+);
+
+drop table if exists sql_learning_system_db.playground_session;
+create table if not exists sql_learning_system_db.playground_session (
+    `username` varchar(256) unique not null comment '用户名' primary key,
+    `container_id` varchar(256) unique not null comment '容器id',
+    `port` int unique not null comment '端口',
+    `expiry_time` TIMESTAMP not null comment '过期',
+    foreign key (`username`) references `user` (`username`)
 );

@@ -1,15 +1,27 @@
 package org.derrick.sqllearningsystem.util;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.stereotype.Component;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Date;
+import java.util.Map;
+
+@Component
 public class JwtUtil {
-    public static final String SECRET = "secret";
-    public static final long EXPIRATION = 3600L;
-    public static final String TOKEN = "token";
-
-    public static String generateToken(String username) {
+    private static final String secret = "whatisasecret";
+    public static String generateToken(Map<String, Object> map) throws NoSuchAlgorithmException, InvalidKeySpecException {
 
 
-
-        return null;
+        return Jwts.builder().
+                setClaims(map)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
     }
 
     public static String getUsername(String token) {
@@ -22,14 +34,17 @@ public class JwtUtil {
         return false;
     }
 
-    public static boolean isTokenExpired(String token) {
-
-        return false;
+    public static Claims parseToken(String token) {
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
     public static boolean isTokenInvalid(String token) {
 
         return false;
+    }
+
+    public static void isTokenExpired() throws NoSuchAlgorithmException, InvalidKeySpecException {
+
     }
 
 }
