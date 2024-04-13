@@ -8,7 +8,7 @@ import java.util.List;
 
 @Slf4j
 public class PlaygroundConnector {
-    static Connection connection = null;
+    private Connection connection;
     private final String DB_URL;
 
     public PlaygroundConnector(String dbUrl) {
@@ -19,10 +19,6 @@ public class PlaygroundConnector {
 
     public void connect() {
         try {
-            if (connection.isValid(5)) {
-                log.info("SqlConnecter already connected to {}", DB_URL);
-            return;
-        }
             connection = DriverManager.getConnection(DB_URL);
         } catch (SQLException e) {
             log.error("Error connecting to database: {}", e.getMessage());

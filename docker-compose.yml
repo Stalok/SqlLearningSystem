@@ -1,6 +1,90 @@
 version: "3.1"
 services:
-  redis:
-    image: redis:alpine
+  mysql-1:
+    image: mysql:8.0.36-debian
+    container_name: mysql-1
+    volumes:
+      - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
     ports:
-      - "6379:6379"
+      - "5001:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+#      MYSQL_DATABASE: sql_learning_system_db
+
+  mysql-2:
+    image: mysql:8.0.36-debian
+    container_name: mysql-2
+    volumes:
+      - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5002:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+#      MYSQL_DATABASE: sql_learning_system_db
+
+  mysql-3:
+    image: mysql:8.0.36-debian
+    container_name: mysql-3
+    volumes:
+      - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5003:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+#      MYSQL_DATABASE: sql_learning_system_db
+
+#  mysql-4:
+#    image: mysql:8.0.36-debian
+#    container_name: mysql-4
+#    ports:
+#      - "5004:3306"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 123456
+#
+#  mysql-5:
+#    image: mysql:8.0.36-debian
+#    container_name: mysql-5
+#    ports:
+#      - "5005:3306"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 123456
+#
+#  mysql-6:
+#    image: mysql:8.0.36-debian
+#    container_name: mysql-6
+#    ports:
+#      - "5006:3306"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 123456
+#
+#  mysql-7:
+#    image: mysql:8.0.36-debian
+#    container_name: mysql-7
+#    ports:
+#      - "5007:3306"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 123456
+#
+#  mysql-8:
+#    image: mysql:8.0.36-debian
+#    container_name: mysql-8
+#    ports:
+#      - "5008:3306"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 123456
+#
+#  mysql-9:
+#    image: mysql:8.0.36-debian
+#    container_name: mysql-9
+#    ports:
+#      - "5009:3306"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 123456
+#
+#  mysql-10:
+#    image: mysql:8.0.36-debian
+#    container_name: mysql-10
+#    ports:
+#      - "5010:3306"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 123456

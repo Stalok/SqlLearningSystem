@@ -10,4 +10,8 @@ public interface PlayGroundService {
     QuizView newPlayGround(String username);
 
     QuizView forwardPlayGround(String username);
+
+    QuizView newPreloadedPlayground(String username, Integer lessonId);
+
+    void deletePreloadedPlayground(String username);
 }

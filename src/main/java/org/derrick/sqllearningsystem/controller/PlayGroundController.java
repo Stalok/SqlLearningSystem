@@ -16,24 +16,12 @@ public class PlayGroundController {
 
     /**
      * Create a new playground with designated playground id
-     * @param username username
      * @param playgroundId playground id
      * @return message
      */
-    @PostMapping("/{username}/{playgroundId}")
-    public QuizView newPlayGround(@PathVariable String username, @PathVariable Integer playgroundId) throws Exception {
-        return playGroundService.newPlayGround(username, playgroundId);
-    }
-
-    /**
-     * Create a new playground with the progress of the last playground
-     * @param username username
-     * @return message
-     */
-    @PostMapping("/{username}")
-    public String newPlayGround(@PathVariable String username) {
-        playGroundService.newPlayGround(username);
-        return "Playground created for " + username;
+    @PostMapping("/{playgroundId}")
+    public QuizView newPlayGround(Principal principal, @PathVariable Integer playgroundId) throws Exception {
+        return playGroundService.newPlayGround(principal.getName(), playgroundId);
     }
 
     /**
@@ -42,21 +30,30 @@ public class PlayGroundController {
      * @return message
      */
     @PostMapping("/new")
-    public String newPlayGround(Principal principal) {
-        playGroundService.newPlayGround(principal.getName());
-        return "Playground created for " + principal.getName();
+    public QuizView newPlayGround(Principal principal) {
+        return playGroundService.newPlayGround(principal.getName());
     }
 
-    @GetMapping("/continue/{username}")
-    public String forwardPlayGround(@PathVariable String username) {
-        playGroundService.forwardPlayGround(username);
-        return "Playground extended for " + username;
+    @PostMapping("/continue")
+    public QuizView forwardPlayGround(Principal principal) {
+        return playGroundService.forwardPlayGround(principal.getName());
     }
 
-    @DeleteMapping("/{username}")
-    public String deletePlayGround(@PathVariable String username) {
-        playGroundService.deletePlayGround(username);
-        return "Playground deleted for " + username;
+    @DeleteMapping
+    public String deletePlayGround(Principal principal) {
+        playGroundService.deletePreloadedPlayground(principal.getName());
+        return "Playground deleted for " + principal.getName();
     }
 
+    @PutMapping("/check")
+    public String checkAnswer(Principal principal) {
+        //TODO
+        return "Playground checked for " + principal.getName();
+    }
+
+    @PutMapping("/sql")
+    public String executeSql(Principal principal) {
+        //TODO
+        return "SQL checked for " + principal.getName();
+    }
 }

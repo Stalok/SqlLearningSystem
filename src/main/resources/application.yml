@@ -41,7 +41,7 @@ logging:
     org.springframework.security: DEBUG
 
 server:
-    port: 8080
+    port: 9090
     ssl:
 #     TODO : change to production keystore
       certificate: "classpath:keystore/my-cert.pem"

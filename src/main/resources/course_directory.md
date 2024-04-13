@@ -1,19 +1,15 @@
 
 1. **SQL 簡介**
-    - 什麼是 SQL？
-    - SQL 的歷史和用途
-    - 常見的 SQL 資料庫系統
+    - 什麼是 SQL？, SQL 的歷史和用途, 常見的 SQL 資料庫系統
 
 2. **基本 SQL 語法**
-    - SELECT 語句
-    - WHERE 子句
+    - SELECT 語句, WHERE 子句
     - ORDER BY 子句
-    - GROUP BY 子句
+    - GROUP BY 子句, HAVING 子句
 
 3. **資料表的創建和修改**
-    - CREATE TABLE 語句
+    - CREATE TABLE 語句, DROP TABLE 語句
     - ALTER TABLE 語句
-    - DROP TABLE 語句
 
 4. **資料的插入、更新和刪除**
     - INSERT INTO 語句
@@ -32,17 +28,13 @@
 7. **進階 SQL 主題**
     - 視圖 (Views)
     - 索引 (Indexes)
+    - 觸發器 (Triggers)
     - 事務 (Transactions)
 
 8. **實戰案例和最佳實踐**
     - 常見的 SQL 問題和解決方案
     - 優化 SQL 查詢
 
-
-1. 能不能推荐几个学习SQL的网站？ - 知乎. https://www.zhihu.com/question/23463146.
-2. SQL介紹 | 南臺開放式課程平台 - stust.edu.tw. https://ocw.stust.edu.tw/tc/node/database_014.
-3. 自学SQL网(教程 视频 练习全套) - xuesql.cn. http://xuesql.cn/.
-4. SQL 教程. https://www.w3schools.cn/sql/.
 
 # 选题依据：基于容器化的 MySQL 教学平台设计与实现
 
@@ -75,14 +67,3 @@
 5. 菜鸟教程. [MySQL 教程](https://www.runoob.com/mysql/mysql-tutorial.html).
 6. 知乎. [京东到家MySQL容器化，为何首选Docker而非K8s？](https://www.zhihu.com/question/462713524).
 7. 博客园. [容器化 | MySQL on K8s 开源开放的高可用容器编排方案 - RadonDB](https://www.cnblogs.com/radondb/p/14892635.html).
-
-希望这个选题能为你的毕业设计提供有益的参考！如果你有其他问题，欢迎随时询问。👍
-
-來源: 與 Bing 的交談， 15/3/2024
-(1) MySQL Tutorial - W3Schools. https://www.w3schools.com/mysql/.
-(2) SQL、Mysql、数据库到底什么关系？ - 知乎 - 知乎专栏. https://zhuanlan.zhihu.com/p/130768469.
-(3) SQL vs MySQL - GeeksforGeeks. https://www.geeksforgeeks.org/sql-vs-mysql/.
-(4) 容器化 | 基于 Kubernetes 的新一代 MySQL 高可用架构实现方案 - 知乎. https://zhuanlan.zhihu.com/p/385980232.
-(5) MySQL 教程 | 菜鸟教程. https://www.runoob.com/mysql/mysql-tutorial.html.
-(6) 京东到家MySQL容器化，为何首选Docker而非K8s？ - 知乎. https://www.zhihu.com/question/462713524.
-(7) 容器化 | MySQL on K8s 开源开放的高可用容器编排方案 - RadonDB - 博客园. https://www.cnblogs.com/radondb/p/14892635.html.
