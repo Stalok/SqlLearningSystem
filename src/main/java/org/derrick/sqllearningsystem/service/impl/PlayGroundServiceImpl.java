@@ -22,6 +22,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -179,8 +181,11 @@ public class PlayGroundServiceImpl implements PlayGroundService {
         // get the next quiz
         Quiz quiz = playGroundMapper.getQuizById(playGroundSession.quizId() + 1);
         // execute the prerequisite sql
-        playGroundSession.mainConnector().executeUpdate(quiz.prerequisite_sql());
-        playGroundSession.mirrorConnector().executeUpdate(quiz.prerequisite_sql());
+        String script = quiz.prerequisite_sql();
+        if (script != null) {
+            playGroundSession.mainConnector().executeUpdate(script);
+            playGroundSession.mirrorConnector().executeUpdate(script);
+        }
         // update the quiz id of the user
         playGroundSession.setQuizId(playGroundSession.quizId() + 1);
         return new QuizView(quiz);
@@ -194,26 +199,19 @@ public class PlayGroundServiceImpl implements PlayGroundService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No available container"));
 
-        // start the container
+
         String containerName = availableContainer.getContainerName();
         Integer port = availableContainer.getPort();
-//        Request startContainerRequest = Request.builder()
-//                .method(Request.Method.POST)
-//                .path("/v1.44/containers/" + containerName + "/start")
-//                .build();
-//
-//        Response response = dockerHttpClient.execute(startContainerRequest);
-//        if (response.getStatusCode() != 204) {
-//            throw new IllegalStateException("Failed to start container");
-//        }
-
-//        log.info("container {} started for user {} at port {}", containerName, username, port);
+        availableContainer.setIs_available(false);
+        availableContainer.setUsername(username);
 
         // get quiz
         Quiz quiz = playGroundMapper.getQuizByLessonIdAndLessonQuizId(lessonId, 1);
 
         // connect to the database
         PlaygroundConnector mainConnector = new PlaygroundConnector("jdbc:mysql://localhost:" + port + "/?user=root&password=123456");
+        mainConnector.executeUpdate("DROP DATABASE if exists main_db");
+        mainConnector.executeUpdate("DROP DATABASE if exists mirror_db");
         mainConnector.executeUpdate("CREATE DATABASE if not exists main_db");
         mainConnector.executeUpdate("CREATE DATABASE if not exists mirror_db");
         mainConnector.executeUpdate("USE main_db");
@@ -224,8 +222,11 @@ public class PlayGroundServiceImpl implements PlayGroundService {
         // execute the prerequisite sql
         String script = quiz.prerequisite_sql();
         if (script != null) {
-            mainConnector.executeUpdate(script);
-            mirrorConnector.executeUpdate(script);
+            //split the script by ;
+            for (String s : script.split(";")) {
+                mainConnector.executeUpdate(s);
+                mirrorConnector.executeUpdate(s);
+            }
         }
 
         // update progress of the user
@@ -252,9 +253,84 @@ public class PlayGroundServiceImpl implements PlayGroundService {
         containerInfoList.stream()
                 .filter(containerInfo -> containerInfo.getContainerName().equals(playGroundSession.containerId()))
                 .findFirst()
-                .ifPresent(containerInfo -> containerInfo.setIs_available(true));
+                .ifPresent(containerInfo -> {
+                    containerInfo.setIs_available(true);
+                    containerInfo.setUsername(null);
+                });
 
         // delete the record
         playGroundSessionMap.remove(username);
+    }
+
+    @Override
+    public Boolean checkAnswer(String username, String answer) throws SQLException {
+        // get the current playground of the user
+        PlayGroundSession playGroundSession = playGroundSessionMap.get(username);
+        Quiz currentQuiz = playGroundMapper.getQuizById(playGroundSession.quizId());
+        if (answer == null) {
+            return false;
+        }
+
+        //TODO: better way to compare the result
+        if (Objects.equals(currentQuiz.type(), "SELECT")) {
+            if (answer.startsWith("SELECT") || answer.startsWith("select")) {
+                ResultSet mainResultSet = playGroundSession.mainConnector().executeQuery(answer);
+                ResultSet mirrorResultSet = playGroundSession.mirrorConnector().executeQuery(answer);
+                return compareResultSets(mainResultSet, mirrorResultSet);
+            } else {
+                return false;
+            }
+        } else {
+            // execute the correct answer in the mirror database
+            String mirrorOperation = currentQuiz.answer();
+            for (String s : mirrorOperation.split(";")) {
+                playGroundSession.mirrorConnector().executeUpdate(s);
+            }
+
+            // check if the result is the same
+            ResultSet mainResultSet = playGroundSession.mainConnector().executeQuery(currentQuiz.check_sql());
+            ResultSet mirrorResultSet = playGroundSession.mirrorConnector().executeQuery(currentQuiz.check_sql());
+            return compareResultSets(mainResultSet, mirrorResultSet);
+        }
+    }
+
+    @Override
+    public List<List<String>> executeSql(String username, String sql) throws SQLException {
+        if (sql == null) {
+            return null;
+        }
+        // get the current playground of the user
+        PlayGroundSession playGroundSession = playGroundSessionMap.get(username);
+
+        if (sql.startsWith("SELECT") || sql.startsWith("select")) {
+            ResultSet mainResultSet = playGroundSession.mainConnector().executeQuery(sql);
+            return playGroundSession.mainConnector().convertResultSetToList(mainResultSet);
+        } else {
+            playGroundSession.mainConnector().executeUpdate(sql);
+            return null;
+        }
+    }
+
+    public boolean compareResultSets(ResultSet rs1, ResultSet rs2) throws SQLException {
+        while (rs1.next() && rs2.next()) {
+            // Assuming both result sets have the same number of columns
+            int numColumns = rs1.getMetaData().getColumnCount();
+
+            for (int i = 1; i <= numColumns; i++) {
+                Object value1 = rs1.getObject(i);
+                Object value2 = rs2.getObject(i);
+
+                if (value1 == null && value2 == null) {
+                    continue;
+                }
+
+                if (value1 == null || !value1.equals(value2)) {
+                    return false;
+                }
+            }
+        }
+
+        // Check if both result sets have the same number of rows
+        return !rs1.next() && !rs2.next();
     }
 }

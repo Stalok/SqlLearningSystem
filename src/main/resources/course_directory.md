@@ -7,33 +7,25 @@
     - ORDER BY 子句
     - GROUP BY 子句, HAVING 子句
 
-3. **資料表的創建和修改**
-    - CREATE TABLE 語句, DROP TABLE 語句
-    - ALTER TABLE 語句
+3. **資料表的創建和修改、資料的插入、更新和刪除**
+    - CREATE TABLE 語句, DROP TABLE 語句, ALTER TABLE 語句
+    - INSERT INTO 語句, DELETE FROM 語句, UPDATE 語句
 
-4. **資料的插入、更新和刪除**
-    - INSERT INTO 語句
-    - UPDATE 語句
-    - DELETE FROM 語句
+4. **資料庫設計和正規化**
+    - 資料庫設計原則, 正規化的基本概念
 
-5. **資料庫設計和正規化**
-    - 資料庫設計原則
-    - 正規化的基本概念
-
-6. **多表操作**
+5. **多表操作**
     - JOIN 操作
+    - UNION 操作, INTERSECT 操作
     - 子查詢
-    - 聯合查詢
 
-7. **進階 SQL 主題**
+6. **進階 SQL 主題**
     - 視圖 (Views)
-    - 索引 (Indexes)
-    - 觸發器 (Triggers)
-    - 事務 (Transactions)
+    - 索引 (Indexes), 觸發器 (Triggers)和事務 (Transactions)
 
-8. **實戰案例和最佳實踐**
+7. **實戰案例和最佳實踐**
     - 常見的 SQL 問題和解決方案
-    - 優化 SQL 查詢
+    - SQL 最佳實踐
 
 
 # 选题依据：基于容器化的 MySQL 教学平台设计与实现

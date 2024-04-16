@@ -52,12 +52,13 @@ create table if not exists sql_learning_system_db.quizzes (
     lesson_quiz_id int not null comment '用于在lesson中排序',    -- 用于在playground中排序
     prerequisite_sql varchar(3000) comment 'sql to run before the quiz',      -- sql to run before the quiz
     question varchar(3000) not null,     -- 问题
-    type varchar(255) not null,         -- 类型 (multi_choice, query, changes)
+    type varchar(255) not null,         -- 类型 (article, multi_choice, SELECT, changes)
     choice1 varchar(355),
     choice2 varchar(355),
     choice3 varchar(355),
     choice4 varchar(355),
-    answer varchar(2000) not null
+    answer varchar(2000),
+    check_sql varchar(3000)   -- 检查sql
     -- multi_choice:
     -- query: select ...
     -- changes: make changes to mirror_db and query both db to compare

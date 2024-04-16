@@ -6,6 +6,8 @@ import org.derrick.sqllearningsystem.service.PlayGroundService;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/playground")
@@ -19,9 +21,9 @@ public class PlayGroundController {
      * @param playgroundId playground id
      * @return message
      */
-    @PostMapping("/{playgroundId}")
-    public QuizView newPlayGround(Principal principal, @PathVariable Integer playgroundId) throws Exception {
-        return playGroundService.newPlayGround(principal.getName(), playgroundId);
+    @PostMapping("/new/")
+    public QuizView newPlayGround(Principal principal, @RequestParam Integer playgroundId) {
+        return playGroundService.newPreloadedPlayground(principal.getName(), playgroundId);
     }
 
     /**
@@ -45,15 +47,13 @@ public class PlayGroundController {
         return "Playground deleted for " + principal.getName();
     }
 
-    @PutMapping("/check")
-    public String checkAnswer(Principal principal) {
-        //TODO
-        return "Playground checked for " + principal.getName();
+    @PostMapping("/check")
+    public Boolean checkAnswer(Principal principal, @RequestParam String answer) throws SQLException {
+        return playGroundService.checkAnswer(principal.getName(), answer);
     }
 
     @PutMapping("/sql")
-    public String executeSql(Principal principal) {
-        //TODO
-        return "SQL checked for " + principal.getName();
+    public List<List<String>> executeSql(Principal principal, @RequestParam String sql) throws SQLException {
+        return playGroundService.executeSql(principal.getName(), sql);
     }
 }
