@@ -1,5 +1,6 @@
 package org.derrick.sqllearningsystem.service;
 
+import org.derrick.sqllearningsystem.entity.ChapterView;
 import org.derrick.sqllearningsystem.entity.QuizView;
 
 import java.sql.SQLException;
@@ -9,6 +10,8 @@ public interface PlayGroundService {
     QuizView newPlayGround(String username, Integer playgroundId) throws Exception;
 
     void deletePlayGround(String username);
+
+    List<ChapterView> getAllCourses();
 
     QuizView newPlayGround(String username);
 

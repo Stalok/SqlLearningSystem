@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/playground")
+@CrossOrigin(origins = "http://localhost")
 @RequiredArgsConstructor
 public class PlayGroundController {
 
@@ -21,8 +22,8 @@ public class PlayGroundController {
      * @param playgroundId playground id
      * @return message
      */
-    @PostMapping("/new/")
-    public QuizView newPlayGround(Principal principal, @RequestParam Integer playgroundId) {
+    @PostMapping("/new/{playgroundId}")
+    public QuizView newPlayGround(Principal principal, @PathVariable Integer playgroundId) {
         return playGroundService.newPreloadedPlayground(principal.getName(), playgroundId);
     }
 

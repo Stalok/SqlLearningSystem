@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.derrick.sqllearningsystem.connecter.PlaygroundConnector;
-import org.derrick.sqllearningsystem.entity.ContainerInfo;
-import org.derrick.sqllearningsystem.entity.PlayGroundSession;
-import org.derrick.sqllearningsystem.entity.Quiz;
-import org.derrick.sqllearningsystem.entity.QuizView;
+import org.derrick.sqllearningsystem.entity.*;
 import org.derrick.sqllearningsystem.mapper.CredentialMapper;
 import org.derrick.sqllearningsystem.mapper.PlayGroundMapper;
 import org.derrick.sqllearningsystem.service.PlayGroundService;
@@ -25,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -159,6 +157,18 @@ public class PlayGroundServiceImpl implements PlayGroundService {
 
     }
 
+
+    @Override
+    public List<ChapterView> getAllCourses() {
+        List<String> allChapters = playGroundMapper.getAllChapters();
+        List<ChapterView> chapterViewList = new ArrayList<>();
+        for (int i = 0; i < allChapters.size(); i++) {
+            List<LessonView> lessonViewList = playGroundMapper.getLessonsByChapterId(i + 1);
+            chapterViewList.add(new ChapterView(allChapters.get(i), lessonViewList));
+        }
+        return chapterViewList;
+    }
+
     @Override
     public QuizView newPlayGround(String username) {
         // get the last playground of the user
@@ -183,8 +193,10 @@ public class PlayGroundServiceImpl implements PlayGroundService {
         // execute the prerequisite sql
         String script = quiz.prerequisite_sql();
         if (script != null) {
-            playGroundSession.mainConnector().executeUpdate(script);
-            playGroundSession.mirrorConnector().executeUpdate(script);
+            for (String s : script.split(";")) {
+                playGroundSession.mainConnector().executeUpdate(s);
+                playGroundSession.mirrorConnector().executeUpdate(s);
+            }
         }
         // update the quiz id of the user
         playGroundSession.setQuizId(playGroundSession.quizId() + 1);
@@ -310,6 +322,7 @@ public class PlayGroundServiceImpl implements PlayGroundService {
             return null;
         }
     }
+
 
     public boolean compareResultSets(ResultSet rs1, ResultSet rs2) throws SQLException {
         while (rs1.next() && rs2.next()) {

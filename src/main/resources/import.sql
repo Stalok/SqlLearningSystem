@@ -6,20 +6,20 @@ VALUES
 
 
 
-insert into sql_learning_system_db.chapter (course_id, name, description, is_active)
+insert into sql_learning_system_db.chapter (name, description, is_active)
 values
-    (1, 'SQL 簡介', 'Introduction to SQL and databases', 1),
-    (2, '基本 SQL 語法', 'Understand SQL syntax and commands', 1),
-    (3, '資料表的創建和修改', 'Create and modify tables in SQL', 1),
-    (4, '資料的插入、更新和刪除', 'Insert, update, and delete data in SQL', 1),
-    (5, '資料庫設計和正規化', 'Design databases and normalize data', 1),
-    (6, '多表操作', 'Perform operations on multiple tables in SQL', 1),
-    (7, '進階 SQL 主題', 'Advanced SQL topics and techniques', 1),
-    (8, '實戰案例和最佳實踐', 'Real-world case studies and best practices', 1);
+    ('SQL 簡介', 'Introduction to SQL and databases', 1),
+    ('基本 SQL 語法', 'Understand SQL syntax and commands', 1),
+    ('資料表的創建和修改', 'Create and modify tables in SQL', 1),
+    ('資料的插入、更新和刪除', 'Insert, update, and delete data in SQL', 1),
+    ('資料庫設計和正規化', 'Design databases and normalize data', 1),
+    ('多表操作', 'Perform operations on multiple tables in SQL', 1),
+    ('進階 SQL 主題', 'Advanced SQL topics and techniques', 1),
+    ('實戰案例和最佳實踐', 'Real-world case studies and best practices', 1);
 # select * from sql_learning_system_db.chapter;
 
 
-insert into sql_learning_system_db.lesson (name, description, type, chapter, is_active)
+insert into sql_learning_system_db.lesson (name, description, type, chapter_id, is_active)
 VALUES
     # Chapter 1: SQL 簡介
     ('什麼是 SQL？', 'Introduction to SQL and databases', 'text', 1, 1),

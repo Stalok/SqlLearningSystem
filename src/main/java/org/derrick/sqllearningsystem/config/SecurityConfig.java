@@ -31,7 +31,7 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers("/login", "/register").permitAll()
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers("/login", "/register", "/courses").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

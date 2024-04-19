@@ -6,7 +6,7 @@ create database if not exists sql_learning_system_db default character set utf8m
 create table if not exists sql_learning_system_db.`chapter`
 (
     `id` int not null auto_increment comment '主键' primary key,
-    `course_id` int not null comment '章节id, 第X章',
+#     `course_id` int not null comment '章节id, 第X章',
     `name` varchar(256) not null comment '章节名称',
     `description` varchar(256) not null comment '章节描述',
     `create_time` TIMESTAMP default CURRENT_TIMESTAMP not null comment '创建时间',
@@ -21,7 +21,7 @@ create table if not exists sql_learning_system_db.`lesson`
     `name` varchar(256) not null comment '课程名称',
     `description` varchar(256) not null comment '课程描述',
     `type` varchar(256) not null comment '课程类型, could be article or playground(lab)',
-    `chapter` int not null comment '所屬章节' references chapter(id),
+    `chapter_id` int not null comment '所屬章节' references chapter(id),
     `total_quizzes` int default 0 not null comment '总quiz数',
     `create_time` TIMESTAMP default CURRENT_TIMESTAMP not null comment '创建时间',
     `update_time` TIMESTAMP default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
