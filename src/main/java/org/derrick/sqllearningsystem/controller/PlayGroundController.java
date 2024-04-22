@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/playground")
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "https://localhost")
 @RequiredArgsConstructor
 public class PlayGroundController {
 

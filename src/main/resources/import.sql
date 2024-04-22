@@ -10,8 +10,7 @@ insert into sql_learning_system_db.chapter (name, description, is_active)
 values
     ('SQL 簡介', 'Introduction to SQL and databases', 1),
     ('基本 SQL 語法', 'Understand SQL syntax and commands', 1),
-    ('資料表的創建和修改', 'Create and modify tables in SQL', 1),
-    ('資料的插入、更新和刪除', 'Insert, update, and delete data in SQL', 1),
+    ('資料表的創建和修改、資料的插入、更新和刪除', 'Create and modify tables in SQL', 1),
     ('資料庫設計和正規化', 'Design databases and normalize data', 1),
     ('多表操作', 'Perform operations on multiple tables in SQL', 1),
     ('進階 SQL 主題', 'Advanced SQL topics and techniques', 1),
@@ -31,21 +30,21 @@ VALUES
     ('ORDER BY 子句', 'Sort data using the ORDER BY clause in SQL', 'playground', 2, 1),
     ('GROUP BY 子句, HAVING 子句', 'Group data using the GROUP BY clause in SQL', 'playground', 2, 1),
 #     ('HAVING 子句', 'Filter grouped data using the HAVING clause in SQL', 'playground', 2, 1),
-    # chapter 3: 資料表的創建和修改
+    # chapter 3: 資料表的創建和修改、資料的插入、更新和刪除
     ('CREATE TABLE 語句, DROP TABLE 語句, ALTER TABLE 語句', 'Create, delete, and modify tables in SQL', 'playground', 3, 1),
     ('INSERT INTO 語句, DELETE FROM 語句, UPDATE 語句', 'Insert, delete, and update data in SQL tables', 'playground', 3, 1),
     # chapter 4: 資料庫設計和正規化
-    ('資料庫設計原則, 正規化的基本概念', 'Principles of database design', 'text', 5, 1),
+    ('資料庫設計原則, 正規化的基本概念', 'Principles of database design', 'text', 4, 1),
     # chapter 5: 多表操作
-    ('JOIN 操作', 'Combine data from multiple tables using JOIN operations in SQL', 'playground', 6, 1),
-    ('UNION 操作, INTERSECT 操作', 'Combine results from multiple queries using UNION and INTERSECT operations in SQL', 'playground', 6, 1),
-    ('子查詢', 'Use subqueries to perform complex queries in SQL', 'playground', 6, 1),
+    ('JOIN 操作', 'Combine data from multiple tables using JOIN operations in SQL', 'playground', 5, 1),
+    ('UNION 操作, INTERSECT 操作', 'Combine results from multiple queries using UNION and INTERSECT operations in SQL', 'playground', 5, 1),
+    ('子查詢', 'Use subqueries to perform complex queries in SQL', 'playground', 5, 1),
     # chapter 6: 進階 SQL 主題
-    ('視圖', 'Create and use views in SQL to simplify complex queries', 'playground', 7, 1),
+    ('視圖', 'Create and use views in SQL to simplify complex queries', 'playground', 6, 1),
     ('索引 (Indexes), 觸發器 (Triggers)和事務 (Transactions)', 'Use indexes, triggers, and transactions in SQL for performance and data integrity', 'playground', 7, 1),
     # chapter 7: 實戰案例和最佳實踐
-    ('常見的 SQL 問題和解決方案', 'Common SQL problems and solutions', 'text', 8, 1),
-    ('SQL 最佳實踐', 'Optimize SQL queries for better performance', 'text', 8, 1)
+    ('常見的 SQL 問題和解決方案', 'Common SQL problems and solutions', 'text', 7, 1),
+    ('SQL 最佳實踐', 'Optimize SQL queries for better performance', 'text', 7, 1)
 ;
 # select * from sql_learning_system_db.lesson;
 
@@ -299,13 +298,29 @@ CREATE TABLE student (
     gpa DECIMAL(3, 2)
 );
      這個表包含了學生的基本信息，如學生ID、姓名、出生日期、性別、專業、GPA等欄位。創表語句的格式為CREATE TABLE 表名 (列定義1, 列定義2, ...); , 列定義包括列名、數據類型和約束條件。其中INT表示整數類型，PRIMARY KEY表示主鍵約束，VARCHAR(50)表示最大長度為50的字符串，DATE表示日期類型，DECIMAL(3, 2)表示3位整數和2位小數的十進制數字。主鍵約束用於唯一標識每條記錄，確保表中的每條記錄都有唯一的主鍵值。',
-        'CHANGE', NULL, NULL, NULL, NULL, 'Next', 'SELECT TABLE_NAME FROM information_schema.tables WHERE table_name = ''student'';'),
+        'CHANGE', NULL, NULL, NULL, NULL, 'CREATE TABLE student (
+    student_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    date_of_birth DATE,
+    gender VARCHAR(10),
+    major VARCHAR(50),
+    gpa DECIMAL(3, 2)
+);', 'SELECT TABLE_NAME FROM information_schema.tables WHERE table_name = ''student'';'),
     (5, 2, NULL,
         'DROP TABLE 語句用於刪除現有的資料表。以下是一個簡單的 DROP TABLE 語句示例：
 DROP TABLE student;
         這個語句將刪除名為student的資料表。請注意，刪除資料表將永久刪除該表及其所有數據，請謹慎操作。',
-            'CHANGE', NULL, NULL, NULL, NULL, 'Next', 'SELECT TABLE_NAME FROM information_schema.tables WHERE table_name = ''student'';'),
-        (5, 3, NULL,
+            'CHANGE', NULL, NULL, NULL, NULL, 'DROP TABLE student;', 'SELECT TABLE_NAME FROM information_schema.tables WHERE table_name = ''student'';'),
+        (5, 3, 'CREATE TABLE student (
+    student_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    date_of_birth DATE,
+    gender VARCHAR(10),
+    major VARCHAR(50),
+    gpa DECIMAL(3, 2)
+);',
             'ALTER TABLE 語句用於修改現有的資料表結構。以下是一個簡單的 ALTER TABLE 語句示例：
 ALTER TABLE student ADD COLUMN email VARCHAR(100);
         這個語句將向student表中添加一個email列，該列的數據類型為VARCHAR(100)。ALTER TABLE 語句還可以用於修改列的數據類型、添加約束條件、刪除列等操作。',

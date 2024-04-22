@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "https://localhost")
 public class HomeController {
 
     private final CredentialService credentialService;

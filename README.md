@@ -1,0 +1,2 @@
+本系統的前端部分使用Nodejs做為基礎，並使用Vite作為開發工具，Vue3作為前端框架。在設計方面使用了Element Plus作為UI框架，並使用了Sass作為CSS預處理器。此系统使用Vue Router作為路由管理，并使用Axios库作为HTTP请求库。
+```
